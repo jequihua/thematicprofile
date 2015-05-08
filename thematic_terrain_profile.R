@@ -98,6 +98,7 @@ from_to <- function(tematic_raster,transect)
 
 # vegetation profile
 
+####################################################
 ###################################### thematic legend
 color_matrix <- matrix(0,9,3)
 color_matrix[1,1]<-"Agricultura"
@@ -119,6 +120,7 @@ color_matrix[6,3]<-"darkorange2"
 color_matrix[7,3]<-"olivedrab2"
 color_matrix[8,3]<-"chartreuse4"
 color_matrix[9,3]<-"paleturquoise1"
+###################################################
 ###################################################
 
 
