@@ -26,19 +26,19 @@ plot(cropped_dem)
 plot(chamela_reproj, col=rgb(0,0,0,alpha=0.1), add=TRUE)
 
 # write raster to disk
-rf <- writeRaster(cropped_dem, filename="dem_chamela_30.tif", format="GTiff", overwrite=TRUE)
+rf <- writeRaster(cropped_dem, filename="dem_chamela_90.tif", format="GTiff", overwrite=TRUE)
 
 # rasterize polygon 
 cham_pol_rast <- rasterize(chamela_reproj,cropped_dem,field="VEGE_gris")
 
 # write raster to disk
-rf <- writeRaster(cham_pol_rast, filename="cham_pol_rast.tif", format="GTiff", overwrite=TRUE)
+rf <- writeRaster(cham_pol_rast, filename="cham_pol_rast90.tif", format="GTiff", overwrite=TRUE)
 
 # clean dem raster
 cropped_dem[is.na(cham_pol_rast)]<-NA
 
 # write raster to disk
-rf <- writeRaster(cropped_dem, filename="dem_chamela_30_clean.tif", format="GTiff", overwrite=TRUE)
+rf <- writeRaster(cropped_dem, filename="dem_chamela_90_clean.tif", format="GTiff", overwrite=TRUE)
 
 # read in transects shape
 trans <- readOGR(".","transecto")
@@ -48,7 +48,7 @@ plot(cham_pol_rast)
 plot(trans[1,],col="red",add=TRUE)
 
 ############################################## LOAD DATA
-cropped_dem<-raster("dem_chamela_30_clean.tif")
+cropped_dem<-raster("dem_chamela_90_clean.tif")
 cham_pol_rast<-raster("cham_pol_rast.tif")
 trans <- readOGR(".","transecto")
 
@@ -111,15 +111,15 @@ color_matrix[7,1]<-"Pastizal"
 color_matrix[8,1]<-"Selva"
 color_matrix[9,1]<-"Vegetación hidrofila"
 color_matrix[,2]<-1:9
-color_matrix[1,3]<-"yellow"
-color_matrix[2,3]<-"darkgray"
-color_matrix[3,3]<-"darkgreen"
-color_matrix[4,3]<-"darkolivegreen4"
-color_matrix[5,3]<-"blue"
-color_matrix[6,3]<-"darkorange2"
-color_matrix[7,3]<-"olivedrab2"
-color_matrix[8,3]<-"chartreuse4"
-color_matrix[9,3]<-"paleturquoise1"
+color_matrix[1,3]<-colors()[77]
+color_matrix[2,3]<-colors()[84]
+color_matrix[3,3]<-colors()[258]
+color_matrix[4,3]<-colors()[657]
+color_matrix[5,3]<-colors()[461]
+color_matrix[6,3]<-colors()[26]
+color_matrix[7,3]<-colors()[652]
+color_matrix[8,3]<-colors()[655]
+color_matrix[9,3]<-colors()[400]
 ###################################################
 ###################################################
 
@@ -131,7 +131,7 @@ tematic_profile <- function(tematic_vector,dem_vector,from_array,to_array,color_
   n <- length(to_array)
   meters <- c(0,(1:(length(dem_vector)-1))*30)
   pdf(outputname,onefile=TRUE, paper='A4r',width=width,height=height)
-  plot(meters,dem_vector,type="l",col="white",xlab=xlab,ylab=ylab)
+  plot(meters,dem_vector,type="l",col="white",xlab=xlab,ylab=ylab,bty="n")
   flag<-FALSE
   if (fillarea)
   {
@@ -177,6 +177,9 @@ plot(rio2_shp,add=TRUE)
 arrays <- from_to(cham_pol_rast,rio2_shp)
 fromarray <- arrays$fromarray
 toarray <- arrays$toarray
-tematic<-tematic_profile(extrans(cham_pol_rast,rio1_shp),
-                         extrans(cropped_dem,rio1_shp),fromarray,toarray,color_matrix,fillarea=TRUE,
-                         width=14,height=9,outputname="perfil2_test.pdf")
+tematic<-tematic_profile(extrans(cham_pol_rast,rio2_shp),
+                         extrans(cropped_dem,rio2_shp),fromarray,toarray,color_matrix,fillarea=FALSE,
+                         width=14,height=9,outputname="perfil2_90_test_outline.pdf",lwd=1)
+
+color=colors()[31]
+plot(1,1,pch=21,bg=color,col=color,cex=2)
