@@ -51,7 +51,7 @@ tematic_profile <- function(tematic_vector,dem_vector,from_array,to_array,color_
   pdf(outputname,onefile=TRUE, paper='A4r',width=width,height=height)
   plot(meters,dem_vector,type="l",col="black",lwd=1,xlab=xlab,ylab=ylab,bty="n")
   
-  legend(23000,1000, # where legend is placed (coodinates)
+  legend(120000,1000, # where legend is placed (coodinates)
          legend=color_matrix[,1],
          fill=color_matrix[,3],
          title="Vegetation and Land Use")

@@ -7,7 +7,7 @@ library("raster")
 ######################## DATA PREPARATION
 
 # working directory
-setwd("D:/Julian/66_mama_dem")
+setwd("D:/Julian/66_mama_dem/chamela_30m/")
 
 # shapefile
 chamela <- readOGR("/home/julian/Documents/demprofile/1/Chamela_3.shp","Chamela_3")
@@ -48,17 +48,24 @@ plot(cham_pol_rast)
 plot(trans[1,],col="red",add=TRUE)
 
 ############################################## LOAD DATA
-cropped_dem<-raster("/home/julian/Documents/demprofile/chamela_90m/dem_chamela_90_clean.tif")
-cham_pol_rast<-raster("/home/julian/Documents/demprofile/chamela_90m/cham_pol_rast90.tif")
-rio <- readOGR("/home/julian/Documents/demprofile/transects/perfil_tres.shp","perfil_tres")
+cropped_dem<-raster("D:/Julian/66_mama_dem/chamela_30m/dem_chamela_30_clean.tif")
+cham_pol_rast<-raster("D:/Julian/66_mama_dem/chamela_30m/cham_pol_rast30.tif")
+rio <- readOGR("D:/Julian/66_mama_dem/rivershape/perfil_tres.shp","perfil_tres")
 
 ############################################## PROFILE PLOTTING
 
 # extract data
-
 ext_dem <- matrix(extract(cropped_dem,rio)[[1]])
-ext_dem[is.na(ext_dem)]<-1
-ext_dem_smooth <- ma(ext_dem,n=21)
+
+projection(cropped_dem)
+
+# any missing values?
+sum(is.na(ext_dem))
+
+#ext_dem[is.na(ext_dem)]<-1
+
+# smooth with moving average
+ext_dem_smooth <- ma(ext_dem,n=15)
 
 ext_pol <- matrix(extract(cham_pol_rast,rio)[[1]])
 
@@ -106,7 +113,7 @@ arrays <- from_to(cham_pol_rast,rio)
 fromarray <- arrays$fromarray
 toarray <- arrays$toarray
 tematic<-tematic_profile(ext_pol,
-                         ext_dem_smooth,fromarray,toarray,color_matrix,fillarea=TRUE,
-                         width=14,height=9,outputname="/home/julian/Documents/demprofile/outputs/perfil_90_smoothed.pdf",
+                         ext_dem_smooth,fromarray,toarray,color_matrix,fillarea=FALSE,
+                         width=14,height=9,outputname="D:/Julian/66_mama_dem/chamela_30m/perfil_30_smoothed.pdf",
                          lwd=1)
 
