@@ -68,22 +68,15 @@ colnames(closest_points_df)<-c("x","y","id")
 coordinates(closest_points_df)=~x+y
 
 # write to disk
-writeOGR(samp_points_reproj, "D:/Julian/66_mama_dem/sampling_points/closest_river_points.shp", "closest_river_points", driver="ESRI Shapefile")
-
+projection(closest_points_df)<-projection(cropped_dem)
+writeOGR(closest_points_df, "D:/Julian/66_mama_dem/sampling_points/closest_river_points.shp", "closest_river_points", driver="ESRI Shapefile")
 
 # visualize
 plot(cropped_dem)
 points(samp_points_reproj,col="red",bg="red",pch=21)
 points(river_coords,col="blue",bg="blue",pch=21,cex=0.2)
 points(closest_points_df,col="green",bg="green",pch=21)
-closest_points_df
 
-?unlist
-
-dists <- spDistsN1(river_coords,coordinates(samp_points_reproj)[i,], longlat = FALSE)
-closest_point <- river_coords[which.min(dists),]
-
-whichmin
-
-coordinates(samp_points_reproj)
+# rasterize
+spot_
 
