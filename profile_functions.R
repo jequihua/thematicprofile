@@ -42,16 +42,27 @@ from_to <- function(tematic_raster,transect)
   return(returnlist)
 }
 
-tematic_profile <- function(tematic_vector,dem_vector,from_array,to_array,color_matrix,fillarea=TRUE,
-                            xlab="Distance from origin",ylab="Height",lwd=1,outputname="perfil.pdf",
-                            width=9,height=6)
+tematic_profile <- function(tematic_vector,
+                            dem_vector,
+                            samp_points_vector,
+                            from_array,to_array,
+                            color_matrix,
+                            sp_matrix,
+                            fillarea=TRUE,
+                            xlab="Distance from origin",
+                            ylab="Height",
+                            lwd=1,
+                            outputname="perfil.pdf",
+                            width=9,
+                            height=6,
+                            pixelsize=90)
 {
   n <- length(to_array)
-  meters <- c(0,(1:(length(dem_vector)-1))*30)
+  meters <- c(0,(1:(length(dem_vector)-1))*pixelsize)
   pdf(outputname,onefile=TRUE, paper='A4r',width=width,height=height)
-  plot(meters,dem_vector,type="l",col="black",lwd=1,xlab=xlab,ylab=ylab,bty="n")
+  plot(meters,dem_vector,type="l",col="black",lwd=1,xlab=xlab,ylab=ylab,bty="n",bty="l")
   
-  legend(120000,1000, # where legend is placed (coodinates)
+  legend(70000,1000, # where legend is placed (coodinates)
          legend=color_matrix[,1],
          fill=color_matrix[,3],
          title="Vegetation and Land Use")
@@ -75,7 +86,6 @@ tematic_profile <- function(tematic_vector,dem_vector,from_array,to_array,color_
                 c(0,dem_vector[interval],0),col=color,border=color) 
       }
     }
-    dev.off()
     flag=TRUE
   }
   else
@@ -86,8 +96,27 @@ tematic_profile <- function(tematic_vector,dem_vector,from_array,to_array,color_
       color <- color_matrix[tematic_vector[to_array[i]],3]
       lines(meters[interval],dem_vector[interval],lwd=lwd,col=color)
     }
-    dev.off()
     flag=TRUE
   }
-  return(flag)
+  
+  counter=0
+  for (j in 1:length(sp_matrix[,1]))
+  {
+    
+    sp_matrix$distanceplot
+    sp_matrix$heightplot
+    
+    if (!is.na(sp_matrix[j,1]))
+    {
+      counter=counter+1
+      points(meters[j],dem_vector[j],pch=21,bg="red",col="black")
+
+      sp_matrix$distanceplot[sp_matrix[j,1]]<-meters[j]
+      sp_matrix$heightplot[sp_matrix[j,1]]<-dem_vector[j]
+
+      text(meters[j]+100,dem_vector[j]+40,labels=sp_matrix[j,1],cex=0.6)
+    }
+  }
+  dev.off()
+  return(sp_matrix)
 }

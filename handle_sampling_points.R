@@ -34,6 +34,8 @@ cropped_dem<-raster("D:/Julian/66_mama_dem/chamela_90m/dem_chamela_90_clean.tif"
 # transform sampling points shape to match projection
 samp_points_reproj <- spTransform(samp_points,CRS(projection(cropped_dem)))
 
+dim(samp_points_reproj)
+
 # write to shapefile
 writeOGR(samp_points_reproj, "D:/Julian/66_mama_dem/sampling_points/samp_points.shp", "samp_points", driver="ESRI Shapefile")
 
@@ -42,22 +44,38 @@ writeOGR(samp_points_reproj, "D:/Julian/66_mama_dem/sampling_points/samp_points.
 # load river shapefile
 rio <- readOGR("D:/Julian/66_mama_dem/rivershape/perfil_tres.shp","perfil_tres")
 
-# get every coordinate as a simple matrix 
-river_coords <- do.call("rbind", lapply(rio@lines, function(x1) do.call("rbind", lapply(x1@Lines, function(x2) x2@coords[-nrow(x2@coords), ]))))
+# make a raster from dem raster
+dem_table <- as.data.frame(rasterToPoints(cropped_dem))
+dem_table$cx<-dem_table$x
+dem_table$cy<-dem_table$y
+coordinates(dem_table)=~x+y
+gridded(dem_table)=TRUE
+dem_table <- brick(dem_table)
+projection(dem_table)<-projection(cropped_dem)
+
+# extract coordinates using river shape
+river_coords <- extract(dem_table,rio)
+river_coords <- matrix(unlist(river_coords), nrow=1323, byrow=FALSE)
+river_coords <- river_coords[,2:3]
 
 # visualize
 plot(cropped_dem)
 points(samp_points_reproj,col="red",bg="red",pch=21)
 points(river_coords,col="blue",bg="blue",pch=21,cex=0.2)
 
+# remove missings
+river_coords_clean <- river_coords[complete.cases(river_coords),]
+
 # distance from every sampling point to every river point
 closest_points <- list()
 for (i in 1:nrow(samp_points_reproj))
 {
-  dists <- spDistsN1(river_coords,coordinates(samp_points_reproj)[i,], longlat = FALSE)
-  closest_point <- river_coords[which.min(dists),]
+  dists <- spDistsN1(river_coords_clean,coordinates(samp_points_reproj)[i,], longlat = FALSE)
+  closest_point <- river_coords_clean[which.min(dists),]
   closest_points[[i]]<-closest_point
 }
+
+length(closest_points)
 
 # unlist closest points to a data.frame
 closest_points_df <- data.frame(matrix(unlist(closest_points), nrow=nrow(samp_points_reproj), byrow=T))
@@ -78,5 +96,12 @@ points(river_coords,col="blue",bg="blue",pch=21,cex=0.2)
 points(closest_points_df,col="green",bg="green",pch=21)
 
 # rasterize
-spot_
+closest_points_df
+closest_points_raster <- rasterize(closest_points_df,cropped_dem,field="id")
+
+closest_points_raster[!is.na(closest_points_raster)]
+length(closest_points_raster[!is.na(closest_points_raster)])
+
+# write raster to disk
+writeRaster(closest_points_raster, filename="D:/Julian/66_mama_dem/sampling_points/closest_points_raster.tif", format="GTiff", overwrite=TRUE)
 
