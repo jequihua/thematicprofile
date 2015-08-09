@@ -4,10 +4,10 @@ library("sp")
 library("raster")
 
 ############################################## LOAD DATA
-cropped_dem<-raster("D:/Julian/66_mama_dem/chamela_90m/dem_chamela_90_clean.tif")
-cham_pol_rast<-raster("D:/Julian/66_mama_dem/chamela_90m/cham_pol_rast90.tif")
-rio <- readOGR("D:/Julian/66_mama_dem/rivershape/perfil_tres.shp","perfil_tres")
-spoints <- raster("D:/Julian/66_mama_dem/sampling_points/closest_points_raster.tif")
+cropped_dem<-raster("E:/work/20150806_thematic_profile/dem_chamela_90_clean.tif")
+cham_pol_rast<-raster("E:/work/20150806_thematic_profile/cham_pol_rast90.tif")
+rio <- readOGR("E:/work/20150806_thematic_profile/perfil_tres.shp","perfil_tres")
+spoints <- raster("E:/work/20150806_thematic_profile/closest_points_raster.tif")
 
 ############################################## PROFILE PLOTTING
 
@@ -80,11 +80,9 @@ fromarray <- arrays$fromarray
 toarray <- arrays$toarray
 
 
-# read sample point names
-samp_names <- read.table("D:/Julian/66_mama_dem/puntos_muestreo.csv",sep=",",header=TRUE,stringsAsFactors=FALSE)
+# read sample points data
+samp_names <- read.table("E:/work/20150806_thematic_profile/puntos_muestreo_plotcoords.csv",sep=",",header=TRUE,stringsAsFactors=FALSE)
 head(samp_names)
-what <-samp_names[,1]
-what[2]
 
 tematic<-tematic_profile(tematic_vector=ext_pol,
                          dem_vector=ext_dem_smooth,
@@ -94,7 +92,7 @@ tematic<-tematic_profile(tematic_vector=ext_pol,
                          color_matrix=color_matrix,
                          sp_matrix=samp_names,
                          fillarea=FALSE,
-                         width=14,height=9,outputname="D:/Julian/66_mama_dem/chamela_90m/perfil_90_smoothed.pdf",
-                         lwd=1)
-dev.off()
+                         width=14,height=9,outputname="E:/work/20150806_thematic_profile/perfil_20150809.pdf",
+                         lwd=3.5)
+
 dev.off()
