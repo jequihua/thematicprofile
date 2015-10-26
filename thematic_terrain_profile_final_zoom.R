@@ -25,21 +25,20 @@ plot(ext_dem_smooth,type="l",col="red")
 # still any missing values?
 sum(is.na(ext_dem_smooth))
 
+ext_dem_smooth[1:4]<-6.2222
+ext_dem_smooth[26:29]<-1.222222
+
 ext_dem_smooth
-
-ext_dem_smooth[1:4]<-932.7
-
-head(ext_dem_smooth)
-
-tail(ext_dem_smooth)
-
-ext_dem_smooth[1318:1323]<-1.222222
 
 # extract land cover data
 ext_pol <- matrix(extract(cham_pol_rast,rio)[[1]])
 
+ext_pol
+
 # extract sampling points data
 ext_cp <- matrix(extract(spoints,rio)[[1]])
+
+ext_cp
 
 # lengths equal?
 length(ext_dem_smooth)
@@ -86,6 +85,9 @@ arrays <- from_to(cham_pol_rast,rio)
 fromarray <- arrays$fromarray
 toarray <- arrays$toarray
 
+fromarray
+toarray
+ext_dem_smooth
 
 length(ext_dem_smooth)
 length(ext_dem)

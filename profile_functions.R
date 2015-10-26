@@ -116,10 +116,10 @@ tematic_profile <- function(tematic_vector,
       sp_matrix$distanceplot[id]<-meters[j]
       sp_matrix$heightplot[id]<-dem_vector[j]
 
-      text(distance,height,labels=sp_matrix[id,1],cex=0.6)
+      text(distance,height,labels=toString(sp_matrix[id,2]),cex=0.8)
     }
   }
-  text(as.numeric(sp_matrix[11,7]),as.numeric(sp_matrix[11,8]),labels=sp_matrix[11,1],cex=0.6)
+  text(as.numeric(sp_matrix[11,7]),as.numeric(sp_matrix[11,8]),labels=toString(sp_matrix[11,2]),cex=0.8)
   
   dev.off()
   
@@ -193,7 +193,7 @@ tematic_profile_csv <- function(tematic_vector,
       
       print(id)
       
-      text(sp_matrix[id,7],sp_matrix[id,8],labels=sp_matrix[id,1],cex=0.6)
+      text(sp_matrix[id,7],sp_matrix[id,8],labels=toString(sp_matrix[id,2]),cex=0.6)
     }
   }
   
