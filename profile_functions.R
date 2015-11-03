@@ -49,8 +49,8 @@ tematic_profile <- function(tematic_vector,
                             color_matrix,
                             sp_matrix,
                             fillarea=TRUE,
-                            xlab="Distance from origin",
-                            ylab="Elevation",
+                            xlab="Distance (m)",
+                            ylab="Elevation (m.a.s.l.)",
                             lwd=1,
                             outputname="perfil.pdf",
                             width=9,
@@ -60,7 +60,7 @@ tematic_profile <- function(tematic_vector,
   n <- length(to_array)
   meters <- c(0,(1:(length(dem_vector)-1))*pixelsize)
   pdf(outputname,onefile=TRUE, paper='A4r',width=width,height=height)
-  plot(meters,dem_vector,type="l",col="black",lwd=1,xlab=xlab,ylab=ylab,bty="n",bty="l",xlim=c(0,130000))
+  plot(meters,dem_vector,type="l",col="black",lwd=1,xlab=xlab,ylab=ylab,bty="n",bty="l",font.lab=2)
   
   #legend(70000,1000, # where legend is placed (coodinates)
   #       legend=color_matrix[,1],
@@ -99,104 +99,29 @@ tematic_profile <- function(tematic_vector,
     flag=TRUE
   }
   
-  sp_matrix$distanceplot
-  sp_matrix$heightplot
   for (j in 1:length(samp_points_vector))
   {
 
     if (!is.na(samp_points_vector[j]))
     {
       id = samp_points_vector[j]
-      points(meters[j],dem_vector[j],pch=21,bg="red",col="black")
+      points(meters[j],dem_vector[j],pch=21,bg="red",col="black",cex=1.3)
+      text(meters[j],dem_vector[j]+0.2,labels=toString(id),cex=1.1,font=2)
       
       print(id)
-      distance=as.numeric(sp_matrix[id,7])
-      height=as.numeric(sp_matrix[id,8])
+      #distance=as.numeric(sp_matrix[id,5])
+      #height=as.numeric(sp_matrix[id,6])
       
-      sp_matrix$distanceplot[id]<-meters[j]
-      sp_matrix$heightplot[id]<-dem_vector[j]
+      #sp_matrix$distanceplot[id]<-meters[j]
+      #sp_matrix$heightplot[id]<-dem_vector[j]
 
-      text(distance,height,labels=toString(sp_matrix[id,2]),cex=0.8)
+      #text(distance,height,labels=toString(id),cex=1.1,font=2)
     }
   }
-  text(as.numeric(sp_matrix[11,7]),as.numeric(sp_matrix[11,8]),labels=toString(sp_matrix[11,2]),cex=0.8)
   
   dev.off()
   
   return(sp_matrix)
 }
 
-tematic_profile_csv <- function(tematic_vector,
-                            dem_vector,
-                            samp_points_vector,
-                            from_array,to_array,
-                            color_matrix,
-                            sp_matrix,
-                            fillarea=TRUE,
-                            xlab="Distance from origin",
-                            ylab="Elevation",
-                            lwd=1,
-                            outputname="perfil.pdf",
-                            width=9,
-                            height=6,
-                            pixelsize=90)
-{
-  n <- length(to_array)
-  meters <- c(0,(1:(length(dem_vector)-1))*pixelsize)
-  pdf(outputname,onefile=TRUE, paper='A4r',width=width,height=height)
-  plot(meters,dem_vector,type="l",col="black",lwd=1,xlab=xlab,ylab=ylab,bty="n",bty="l")
-  
-  #legend(70000,1000, # where legend is placed (coodinates)
-  #       legend=color_matrix[,1],
-  #       fill=color_matrix[,3],
-  #       title="Vegetation and Land Use")
-  flag<-FALSE
-  if (fillarea)
-  {
-    for (i in 1:n)
-    {
-      if(i==1)
-      {
-        interval <- from_array[i]:to_array[i]
-        color <- color_matrix[tematic_vector[1],3]
-        polygon(c(0,meters[interval],meters[interval[length(interval)]]),c(0,dem_vector[interval],0),
-                col=color,border=color)
-      }
-      else
-      {
-        interval <- from_array[i]:to_array[i]
-        color <- color_matrix[tematic_vector[to_array[i]],3]
-        polygon(c(meters[interval[1]],meters[interval],meters[interval[length(interval)]]),
-                c(0,dem_vector[interval],0),col=color,border=color) 
-      }
-    }
-    flag=TRUE
-  }
-  else
-  {
-    for (i in 1:n)
-    {
-      interval <- from_array[i]:to_array[i]
-      color <- color_matrix[tematic_vector[to_array[i]],3]
-      lines(meters[interval],dem_vector[interval],lwd=lwd,col=color)
-    }
-    flag=TRUE
-  }
-  
-  for (j in 1:length(samp_points_vector))
-  {
-    
-    if (!is.na(samp_points_vector[j]))
-    {
-      id = samp_points_vector[j]
-      points(meters[j],dem_vector[j],pch=21,bg="red",col="black")
-      
-      print(id)
-      
-      text(sp_matrix[id,7],sp_matrix[id,8],labels=toString(sp_matrix[id,2]),cex=0.6)
-    }
-  }
-  
-  dev.off()
 
-}

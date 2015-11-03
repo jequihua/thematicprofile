@@ -4,13 +4,13 @@ library("sp")
 library("raster")
 
 # working directory
-setwd("D:/Julian/66_mama_dem/")
+setwd("E:/work/20150806_thematic_profile/")
 
 # shapefile
 chamela <- readOGR("Chamela_3.shp","Chamela_3")
 
 # read sampling points table
-samp_points <- read.table("puntos_muestreo.csv",sep=",",header=TRUE)
+samp_points <- read.table("puntos_finales_20151102.csv",sep=",",header=TRUE)
 
 # table structure
 head(samp_points)
@@ -26,10 +26,10 @@ points(samp_points,col="red",bg="red",pch=21)
 projection(samp_points)<-projection(chamela)
 
 # write to shapefile
-writeOGR(samp_points, "D:/Julian/66_mama_dem/sampling_points/samp_points.shp", "samp_points", driver="ESRI Shapefile")
+writeOGR(samp_points, "samp_points_20151102.shp", "samp_points", driver="ESRI Shapefile")
 
 # Load dem which has the projection we want for this project
-cropped_dem<-raster("D:/Julian/66_mama_dem/chamela_90m/dem_chamela_90_clean.tif")
+cropped_dem<-raster("E:/work/20150806_thematic_profile/dem_chamela_90_clean.tif")
 
 # transform sampling points shape to match projection
 samp_points_reproj <- spTransform(samp_points,CRS(projection(cropped_dem)))
@@ -37,12 +37,12 @@ samp_points_reproj <- spTransform(samp_points,CRS(projection(cropped_dem)))
 dim(samp_points_reproj)
 
 # write to shapefile
-writeOGR(samp_points_reproj, "D:/Julian/66_mama_dem/sampling_points/samp_points.shp", "samp_points", driver="ESRI Shapefile")
+writeOGR(samp_points_reproj, "E:/work/20150806_thematic_profile/samp_points_20151102.shp", "samp_points_20151102", driver="ESRI Shapefile")
 
 ### find closest point from each sampling point to the river
 
 # load river shapefile
-rio <- readOGR("D:/Julian/66_mama_dem/rivershape/perfil_tres.shp","perfil_tres")
+rio <- readOGR("E:/work/20150806_thematic_profile/perfil_tres.shp","perfil_tres")
 
 # make a raster from dem raster
 dem_table <- as.data.frame(rasterToPoints(cropped_dem))
@@ -87,7 +87,7 @@ coordinates(closest_points_df)=~x+y
 
 # write to disk
 projection(closest_points_df)<-projection(cropped_dem)
-writeOGR(closest_points_df, "D:/Julian/66_mama_dem/sampling_points/closest_river_points.shp", "closest_river_points", driver="ESRI Shapefile")
+writeOGR(closest_points_df, "E:/work/20150806_thematic_profile/closest_river_points.shp", "closest_river_points", driver="ESRI Shapefile")
 
 # visualize
 plot(cropped_dem)
@@ -103,5 +103,5 @@ closest_points_raster[!is.na(closest_points_raster)]
 length(closest_points_raster[!is.na(closest_points_raster)])
 
 # write raster to disk
-writeRaster(closest_points_raster, filename="D:/Julian/66_mama_dem/sampling_points/closest_points_raster.tif", format="GTiff", overwrite=TRUE)
+writeRaster(closest_points_raster, filename="E:/work/20150806_thematic_profile/closest_points_raster_20151102.tif", format="GTiff", overwrite=TRUE)
 

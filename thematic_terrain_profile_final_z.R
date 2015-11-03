@@ -6,7 +6,7 @@ library("raster")
 ############################################## LOAD DATA
 cropped_dem<-raster("E:/work/20150806_thematic_profile/dem_chamela_90_clean.tif")
 cham_pol_rast<-raster("E:/work/20150806_thematic_profile/cham_pol_rast90.tif")
-rio <- readOGR("E:/work/20150806_thematic_profile/perfil_tres.shp","perfil_tres")
+rio <- readOGR("E:/work/20150806_thematic_profile/zoom_rio.shp","zoom_rio")
 spoints <- raster("E:/work/20150806_thematic_profile/closest_points_raster_20151102.tif")
 
 ############################################## PROFILE PLOTTING
@@ -16,7 +16,6 @@ ext_dem <- matrix(extract(cropped_dem,rio)[[1]])
 
 # any missing values?
 sum(is.na(ext_dem))
-ext_dem
 ext_dem[is.na(ext_dem)]<-1
 
 # smooth with moving average
@@ -26,23 +25,19 @@ plot(ext_dem_smooth,type="l",col="red")
 # still any missing values?
 sum(is.na(ext_dem_smooth))
 
+ext_dem_smooth[1:4]<-6.2222
+ext_dem_smooth[26:29]<-1.222222
+
 ext_dem_smooth
-
-ext_dem_smooth[1:4]<-932.8
-
-head(ext_dem_smooth)
-
-tail(ext_dem_smooth)
-
-ext_dem_smooth[1318:1323]<-1.222222
 
 # extract land cover data
 ext_pol <- matrix(extract(cham_pol_rast,rio)[[1]])
 
+ext_pol
+
 # extract sampling points data
 ext_cp <- matrix(extract(spoints,rio)[[1]])
-ext_cp[1291]<-9
-ext_cp[1293]<-11
+ext_cp[3] <- 11
 ext_cp
 
 # lengths equal?
@@ -88,7 +83,7 @@ fromarray <- arrays$fromarray
 toarray <- arrays$toarray
 
 # read sample points data
-samp_names <- read.table("E:/work/20150806_thematic_profile/puntos_finales_20151102.csv",sep=",",header=TRUE,stringsAsFactors=FALSE)
+samp_names <- read.table("E:/work/20150806_thematic_profile/puntos_finales_20151102_z.csv",sep=",",header=TRUE,stringsAsFactors=FALSE)
 head(samp_names)
 
 samp_names
@@ -103,7 +98,7 @@ ext_cp
                            color_matrix=color_matrix,
                            sp_matrix=samp_names,
                            fillarea=FALSE,
-                           width=14,height=9,outputname="E:/work/20150806_thematic_profile/perfil_20151102.pdf",
+                           width=14,height=9,outputname="E:/work/20150806_thematic_profile/perfil_20151102_zoom.pdf",
                            lwd=3.5)
 
 tematic
